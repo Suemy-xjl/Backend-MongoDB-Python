@@ -2,14 +2,16 @@ from flask import Flask, jsonify, request, Response
 from flask_pymongo import PyMongo
 from bson.json_util import dumps
 from pymongo import message
-#from bson import json_util
+from flask_cors import CORS
 #from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
+import random
 
 from werkzeug.wrappers import response
 
 app = Flask(__name__)
+cors = CORS(app , resources = {r"/*":{"origins":"*"}}) 
 app.config['MONGO_URI'] = 'mongodb://localhost:27017/Proyecto-Inv' # directorio de mi base de datos local
 mongo = PyMongo(app)
 
@@ -18,18 +20,18 @@ mongo = PyMongo(app)
 @app.route('/socios', methods = ['POST'])
 def create_socio():
     # recibiendo informacion 
-    id_socio = request.json['id_socio']
-    nombre = request.json['nombre']
-    apellidos = request.json['apellidos']
-    contraseña = request.json['contraseña']
-    correo =  request.json['correo']
-    telefono =  request.json['telefono']
-    hashed_password = generate_password_hash(contraseña)
+    id_socio = random.randrange(5011)
+    nombre = request.json['Nombre']
+    apellidos = request.json['Apellidos']
+    contrasenia = request.json['Contrasenia']
+    correo =  request.json['Correo']
+    telefono =  request.json['Telefono']
+    hashed_password = generate_password_hash(contrasenia)
     id = mongo.db.Socios.insert( 
         {'Id_socio': id_socio,
          'Nombre': nombre,
          'Apellidos': apellidos,
-         'Contraseña': hashed_password,
+         'Contrasenia': hashed_password,
          'Correo': correo,
          'Telefono': telefono
         }
@@ -39,7 +41,7 @@ def create_socio():
         'Id_socio': id_socio,
         'Nombre': nombre,
         'Apellidos': apellidos,
-        'Contraseña': contraseña,
+        'Contrasenia': contrasenia,
         'Correo': correo,
         'Telefono': telefono
     })
@@ -69,15 +71,15 @@ def delete_socio(id):
 def update_socio(id):
     nombre = request.json['nombre']
     apellidos = request.json['apellidos']
-    contraseña = request.json['contraseña']
+    contrasenia = request.json['contrasenia']
     correo =  request.json['correo']
     telefono =  request.json['telefono']
-    if nombre and apellidos and contraseña and correo and telefono and id:
-        hashed_password = generate_password_hash(contraseña)
+    if nombre and apellidos and contrasenia and correo and telefono and id:
+        hashed_password = generate_password_hash(contrasenia)
         mongo.db.Socios.update_one({'Id_socio': id}, {'$set':{
         'Nombre': nombre,
         'Apellidos': apellidos,
-        'Contraseña': hashed_password,
+        'Contrasenia': hashed_password,
         'Correo': correo,
         'Telefono': telefono
         }})
@@ -162,6 +164,7 @@ def create_pelicula():
     duracion = request.json['duracion']
     categoria = request.json['categoria']
     fecha_estreno = request.json['fecha_estreno']
+    url_imagen = request.json['url_imagen']
     
     id = mongo.db.Peliculas.insert( 
         {
@@ -170,7 +173,8 @@ def create_pelicula():
          'Descripcion': descripcion,
          'Duracion': duracion,
          'Categoria': categoria,
-         'Fecha_estreno': fecha_estreno
+         'Fecha_estreno': fecha_estreno,
+         'Url_imagen': url_imagen
         }
     ) 
     response = jsonify({
@@ -179,7 +183,8 @@ def create_pelicula():
          'Descripcion': descripcion,
          'Duracion': duracion,
          'Categoria': categoria,
-         'Fecha_estreno': fecha_estreno
+         'Fecha_estreno': fecha_estreno,
+        'Url_imagen': url_imagen
     })
     response.status_code = 201 
     return response # respuesta en JSON al agregar pelicula nuevo
@@ -211,6 +216,7 @@ def update_pelicula(id):
     duracion = request.json['duracion']
     categoria = request.json['categoria']
     fecha_estreno = request.json['fecha_estreno']
+    url_imagen = request.json['url_imagen']
     if titulo and descripcion and categoria and duracion and fecha_estreno and id:
         
         mongo.db.Peliculas.update_one({'Id_pelicula': id}, {'$set':{
@@ -219,7 +225,8 @@ def update_pelicula(id):
          'Descripcion': descripcion,
          'Duracion': duracion,
          'Categoria': categoria,
-         'Fecha_estreno': fecha_estreno
+         'Fecha_estreno': fecha_estreno,
+         'Url_imagen': url_imagen
         }})
         response = jsonify({'Message': 'Pago ' + id + ' actualizado exitosamente'})
         response.status_code = 200 
@@ -239,6 +246,7 @@ def create_serie():
     temporadas = request.json['temporadas']
     categoria = request.json['categoria']
     fecha_estreno = request.json['fecha_estreno']
+    url_imagen = request.json['url_imagen']
     
     id = mongo.db.Series.insert( 
         {
@@ -248,7 +256,8 @@ def create_serie():
          'Capitulos': capitulos,
          'Temporadas': temporadas,
          'Categoria': categoria,
-         'Fecha_estreno': fecha_estreno
+         'Fecha_estreno': fecha_estreno,
+         'Url_imagen': url_imagen
         }
     ) 
     response = jsonify({
@@ -258,7 +267,8 @@ def create_serie():
          'Capitulos': capitulos,
          'Temporadas': temporadas,
          'Categoria': categoria,
-         'Fecha_estreno': fecha_estreno
+         'Fecha_estreno': fecha_estreno,
+         'Url_imagen': url_imagen
     })
     response.status_code = 201 
     return response # respuesta en JSON al agregar serie nuevo
@@ -291,6 +301,7 @@ def update_serie(id):
     temporadas = request.json['temporadas']
     categoria = request.json['categoria']
     fecha_estreno = request.json['fecha_estreno']
+    url_imagen = request.json['url_imagen']
     if titulo and descripcion and categoria and capitulos and fecha_estreno and id:
         
         mongo.db.Series.update_one({'Id_serie': id}, {'$set':{
@@ -300,7 +311,8 @@ def update_serie(id):
          'Capitulos': capitulos,
          'Temporadas': temporadas,
          'Categoria': categoria,
-         'Fecha_estreno': fecha_estreno
+         'Fecha_estreno': fecha_estreno,
+         'Url_imagen': url_imagen
         }})
         response = jsonify({'Message': 'Pago ' + id + ' actualizado exitosamente'})
         response.status_code = 200 
