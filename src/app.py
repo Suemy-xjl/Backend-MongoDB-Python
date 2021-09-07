@@ -33,7 +33,7 @@ def create_socio():
          'Apellidos': apellidos,
          'Contrasenia': hashed_password,
          'Correo': correo,
-         'Telefono': telefono
+         'Telefono': telefono #prueba
         }
     ) 
     response = jsonify({
