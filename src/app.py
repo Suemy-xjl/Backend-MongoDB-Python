@@ -7,6 +7,7 @@ from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 import random
+from bson.objectid import ObjectId
 
 from werkzeug.wrappers import response
 
@@ -363,6 +364,12 @@ def get_capitulos():
 def get_capitulo(id):
     capitulo = mongo.db.Capitulos.find_one({'Id_capitulo': id})
     response = dumps(capitulo)
+    return Response(response, mimetype="aplication/json")
+
+@app.route('/capituloSerie/<id>',methods=['GET'])
+def get_capituloSerie(id):
+    capituloSerie= mongo.db.Capitulos.find({'Id_serie': ObjectId(id)})
+    response = dumps(capituloSerie)
     return Response(response, mimetype="aplication/json")
 
 @app.route('/capitulos/<id>', methods=['DELETE'])
